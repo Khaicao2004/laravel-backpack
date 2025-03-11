@@ -39,12 +39,16 @@ class UserCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        CRUD::setFromDb(['name']); // set columns from db columns.
-
+        CRUD::setFromDb(); // set columns from db columns.
+        // $this->crud->column(['name' => 'name', 'label' => 'Name', 'type' => 'text']);
+        // $this->crud->column(['name' => 'email', 'label' => 'Email', 'type' => 'text']);
         /**
          * Columns can be defined using the fluent syntax:
          * - CRUD::column('price')->type('number');
          */
+        // CRUD::column('id')->label('ID')->type('number');
+        // CRUD::column('name')->label('Name')->type('text');
+        // CRUD::column('email')->label('Email')->type('text');
     }
 
     /**
@@ -57,6 +61,7 @@ class UserCrudController extends CrudController
     {
         CRUD::setValidation(UserRequest::class);
         CRUD::setFromDb(); // set fields from db columns.
+
 
         /**
          * Fields can be defined using the fluent syntax:

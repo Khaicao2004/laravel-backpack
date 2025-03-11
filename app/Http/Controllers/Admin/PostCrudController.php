@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\PostRequest;
+use App\Models\Post;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
@@ -29,6 +30,18 @@ class PostCrudController extends CrudController
         CRUD::setModel(\App\Models\Post::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/post');
         CRUD::setEntityNameStrings('post', 'posts');
+
+        $this->crud->addField([
+            'name' => 'title',
+            'label' => 'Title',
+            'type' => 'text',
+        ]);
+        $this->crud->addField([
+            'name' => 'status',
+            'label' => 'Status',
+            'options' => Post::STATUS,
+            'type' => 'select_from_array',
+        ]);
     }
 
     /**
@@ -40,13 +53,21 @@ class PostCrudController extends CrudController
     protected function setupListOperation()
     {
         CRUD::setFromDb(); // set columns from db columns.
-
+        CRUD::column('image')->type('image')->disk('public')->height('40px');
+        CRUD::column('status')->label('Status')->type('select_from_array')
+        ->options(Post::STATUS);
         /**
          * Columns can be defined using the fluent syntax:
          * - CRUD::column('price')->type('number');
          */
     }
 
+    public function setupShowOperation(){
+        CRUD::setFromDb();
+        CRUD::column('image')->type('image')->disk('public')->height('40px');
+        CRUD::column('status')->label('Status')->type('select_from_array')
+        ->options(Post::STATUS);
+    }
     /**
      * Define what happens when the Create operation is loaded.
      * 
@@ -62,6 +83,8 @@ class PostCrudController extends CrudController
          * Fields can be defined using the fluent syntax:
          * - CRUD::field('price')->type('number');
          */
+        
+        CRUD::field('image')->type('upload')->withFiles(['path' => 'uploads/posts']);
     }
 
     /**
